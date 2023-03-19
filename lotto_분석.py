@@ -8,6 +8,7 @@ from sklearn.ensemble import RandomForestClassifier
 # from tensorflow.keras.models import load_model
 # from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint
 from tqdm import tqdm
+import json
 
 # 개인화 모듈 import
 sys.path.extend(['D:\\_python@local\\ShortPunchTrader'])
@@ -23,12 +24,18 @@ import lotto_logic
 # noinspection PyPep8Naming,PyProtectedMember
 class LottoAnal:
     def __init__(self, b_test=False, s_date=None, n_range=None, b_tqdm=True):
+        # config.json 불러오기
+        with open('config.json', 'rt', encoding='cp949') as file:
+            dic_config = json.load(file)
+
         # 폴더 정의
-        self.folder = os.getcwd()
+        self.folder = str(dic_config['folder_work'])
+        # self.folder = os.getcwd()
         self.folder_history = os.path.join(self.folder, 'history')
         self.folder_run = os.path.join(self.folder, 'run')
         self.folder_result = os.path.join(self.folder, 'result')
         self.folder_result_확률예측 = os.path.join(self.folder_result, '확률예측')
+        os.makedirs(self.folder, exist_ok=True)
         os.makedirs(self.folder_history, exist_ok=True)
         os.makedirs(self.folder_run, exist_ok=True)
         os.makedirs(self.folder_result, exist_ok=True)
@@ -57,7 +64,10 @@ class LottoAnal:
         self.li_6개순번_2개조합 = self._순번조합_2개()
 
         # log path 정의
-        self.path_log = os.path.join('C:\\Users\\chury\\iCloudDrive\\python_log', f'log_lotto_anal_{self.s_오늘날짜}.log')
+        folder_log = str(dic_config['folder_log'])
+        os.makedirs(folder_log, exist_ok=True)
+        self.path_log = os.path.join(folder_log, f'log_lotto_anal_{self.s_오늘날짜}.log')
+        # self.path_log = os.path.join('C:\\Users\\chury\\iCloudDrive\\python_log', f'log_lotto_anal_{self.s_오늘날짜}.log')
 
         # 인스턴스 불러오기
         self.t = cm.Tools()
