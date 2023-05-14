@@ -10,7 +10,7 @@ from bs4 import BeautifulSoup
 class Collector:
     def __init__(self):
         # config 읽어 오기
-        with open('config.json', mode='rt', encoding='cp949') as file:
+        with open('config.json', mode='rt', encoding='utf-8') as file:
             dic_config = json.load(file)
 
         # 기준 정보 설정
