@@ -6,7 +6,7 @@ import requests
 from bs4 import BeautifulSoup
 
 
-# noinspection PyUnresolvedReferences,PyPep8Naming,PyProtectedMember
+# noinspection PyUnresolvedReferences,PyPep8Naming
 class Collector:
     def __init__(self):
         # config 읽어 오기
