@@ -9,7 +9,7 @@ from tqdm import tqdm
 sys.path.extend(['D:\\_python@local\\ShortPunchTrader'])
 import _custom_module_32 as cm
 import API_kakao
-import lotto_logic
+import old_lotto_logic
 
 
 # noinspection PyPep8Naming,PyShadowingNames

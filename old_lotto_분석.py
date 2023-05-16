@@ -14,7 +14,7 @@ import json
 sys.path.extend(['D:\\_python@local\\ShortPunchTrader'])
 import _custom_module_32 as cm
 import API_kakao
-import lotto_logic
+import old_lotto_logic
 
 # 에러 발생 시 파일로 출력
 # folder_log = 'C:\\Users\\chury\\iCloudDrive\\python_log'
