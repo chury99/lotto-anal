@@ -46,49 +46,39 @@ class Selector:
         # log 기록
         self.make_log(f'### 번호 선정 시작 (기준일-{self.s_기준일}) ###')
 
-    def 번호선정_5세트(self, s_선정로직):
-        """ 최종 구매할 6개 번호 * 5개 세트 선정 후 result 폴더에 csv 저장 (기존 데이터는 csv로 읽어 오기) """
         # 예측 기준정보 생성
-        n_예측_차수, s_예측_추첨일 = self._예측기준정보생성(s_기준일=self.s_기준일)
+        self.n_예측_차수, self.s_예측_추첨일 = self._예측기준정보생성(s_기준일=self.s_기준일)
 
+        # 확률값 읽어오기
+        self.dic_확률 = self._확률값_읽어오기()
+
+    def 번호선정(self, s_선정로직):
         # 로그 기록
-        self.make_log(f'# {s_선정로직} ({n_예측_차수:,}차_{s_예측_추첨일}추첨) #')
-
-        # 확률 분석 결과 가져오기
-        dic_확률 = dict()
-        s_파일명 = f'확률예측_1개번호_{n_예측_차수}차_{s_예측_추첨일}추첨.csv'
-        dic_확률['df_확률_1개'] = pd.read_csv(os.path.join(self.folder_확률예측, s_파일명), encoding='cp949')
-        s_파일명 = f'확률예측_2개번호_{n_예측_차수}차_{s_예측_추첨일}추첨.csv'
-        dic_확률['df_확률_2개'] = pd.read_csv(os.path.join(self.folder_확률예측, s_파일명), encoding='cp949')
-        s_파일명 = f'확률예측_6개번호_{n_예측_차수}차_{s_예측_추첨일}추첨.csv'
-        dic_확률['df_확률_6개'] = pd.read_csv(os.path.join(self.folder_확률예측, s_파일명), encoding='cp949')
-        # df_확률_6개 = pd.read_csv(os.path.join(self.folder_확률예측, s_파일명), encoding='cp949')
-        # for n in range(6):
-        #     df_확률_6개[f'no{n + 1}'] = df_확률_6개[f'no{n + 1}'].apply(lambda x: f'{x:02}')
-        # dic_확률['df_확률_6개'] = df_확률_6개
+        self.make_log(f'# {s_선정로직} ({self.n_예측_차수:,}차_{self.s_예측_추첨일}추첨) #')
 
         # 번호 선정
         s_전략명 = None
         df_6개번호_5개세트 = None
+        dic_확률 = self.dic_확률
         if s_선정로직 == '번호선정_2개번호_최빈수':
-            s_전략명, df_6개번호_5개세트 = lotto_logic.번호선정로직_2개번호_최빈수(dic_확률=dic_확률)
+            s_전략명, df_6개번호_5개세트 = logic.번호선정로직_2개번호_최빈수(dic_확률=dic_확률)
         if s_선정로직 == '번호선정_2개번호_최빈수_중복제외':
-            s_전략명, df_6개번호_5개세트 = lotto_logic.번호선정로직_2개번호_최빈수_중복제외(dic_확률=dic_확률)
+            s_전략명, df_6개번호_5개세트 = logic.번호선정로직_2개번호_최빈수_중복제외(dic_확률=dic_확률)
         if s_선정로직 == '번호선정_2개번호_따라가기':
-            s_전략명, df_6개번호_5개세트 = lotto_logic.번호선정로직_2개번호_따라가기(dic_확률=dic_확률)
+            s_전략명, df_6개번호_5개세트 = logic.번호선정로직_2개번호_따라가기(dic_확률=dic_확률)
         if s_선정로직 == '번호선정_2개번호_따라가기_확률반영':
-            s_전략명, df_6개번호_5개세트 = lotto_logic.번호선정로직_2개번호_따라가기_확률반영(dic_확률=dic_확률)
+            s_전략명, df_6개번호_5개세트 = logic.번호선정로직_2개번호_따라가기_확률반영(dic_확률=dic_확률)
         if s_선정로직 == '번호선정_복합로직_최빈수_따라가기':
-            s_전략명, df_6개번호_5개세트 = lotto_logic.번호선정로직_복합로직_최빈수_따라가기(dic_확률=dic_확률)
+            s_전략명, df_6개번호_5개세트 = logic.번호선정로직_복합로직_최빈수_따라가기(dic_확률=dic_확률)
         if s_선정로직 == '번호선정_1개2개연계_최빈수연계':
-            s_전략명, df_6개번호_5개세트 = lotto_logic.번호선정로직_1개2개연계_최빈수연계(dic_확률=dic_확률)
+            s_전략명, df_6개번호_5개세트 = logic.번호선정로직_1개2개연계_최빈수연계(dic_확률=dic_확률)
 
         # 결과 저장용 폴더 생성
         folder_전략명 = os.path.join(self.folder_번호선정, s_전략명)
         os.makedirs(folder_전략명, exist_ok=True)
 
         # csv 저장
-        s_파일명 = f'확률예측_번호선정_{n_예측_차수}차_{s_예측_추첨일}추첨.csv'
+        s_파일명 = f'확률예측_번호선정_{self.n_예측_차수}차_{self.s_예측_추첨일}추첨.csv'
         df_6개번호_5개세트.to_csv(os.path.join(folder_전략명, s_파일명), index=False)
 
     ###################################################################################################################
@@ -110,6 +100,27 @@ class Selector:
         if '파일' in li_출력:
             with open(self.path_log, mode='at', encoding='cp949') as file:
                 file.write(f'{s_log}\n')
+
+    def _확률값_읽어오기(self):
+        """ 최종 구매할 6개 번호 * 5개 세트 선정 후 result 폴더에 csv 저장 (기존 데이터는 csv로 읽어 오기) """
+        # 예측 기준정보 정의
+        n_예측_차수 = self.n_예측_차수
+        s_예측_추첨일 = self.s_예측_추첨일
+
+        # 확률 분석 결과 가져오기
+        dic_확률 = dict()
+        s_파일명 = f'확률예측_1개번호_{n_예측_차수}차_{s_예측_추첨일}추첨.csv'
+        dic_확률['df_확률_1개'] = pd.read_csv(os.path.join(self.folder_확률예측, s_파일명), encoding='cp949')
+        s_파일명 = f'확률예측_2개번호_{n_예측_차수}차_{s_예측_추첨일}추첨.csv'
+        dic_확률['df_확률_2개'] = pd.read_csv(os.path.join(self.folder_확률예측, s_파일명), encoding='cp949')
+        s_파일명 = f'확률예측_6개번호_{n_예측_차수}차_{s_예측_추첨일}추첨.csv'
+        dic_확률['df_확률_6개'] = pd.read_csv(os.path.join(self.folder_확률예측, s_파일명), encoding='cp949')
+        # df_확률_6개 = pd.read_csv(os.path.join(self.folder_확률예측, s_파일명), encoding='cp949')
+        # for n in range(6):
+        #     df_확률_6개[f'no{n + 1}'] = df_확률_6개[f'no{n + 1}'].apply(lambda x: f'{x:02}')
+        # dic_확률['df_확률_6개'] = df_확률_6개
+
+        return dic_확률
 
     def _예측기준정보생성(self, s_기준일):
         """ 예측 차수, 예측 추첨일 정보 생성 후 리턴 """
@@ -133,4 +144,9 @@ class Selector:
 #######################################################################################################################
 if __name__ == '__main__':
     s = Selector(b_test=True)
-    s.번호선정_5세트(s_선정로직=None)
+    s.번호선정(s_선정로직='번호선정_2개번호_최빈수')
+    s.번호선정(s_선정로직='번호선정_2개번호_최빈수_중복제외')
+    s.번호선정(s_선정로직='번호선정_2개번호_따라가기')
+    s.번호선정(s_선정로직='번호선정_2개번호_따라가기_확률반영')
+    s.번호선정(s_선정로직='번호선정_복합로직_최빈수_따라가기')
+    s.번호선정(s_선정로직='번호선정_1개2개연계_최빈수연계')
