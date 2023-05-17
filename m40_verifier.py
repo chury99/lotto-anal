@@ -129,6 +129,9 @@ class Verifier:
         s_파일명 = '당첨번호포함여부_summary.csv'
         df_정리.to_csv(os.path.join(s_폴더명, s_파일명), index=False, encoding='cp949')
 
+        # 로그 기록
+        self.make_log(f'# 당첨번호 포함여부 생성 완료 #')
+
     def 포함확인_확률번호(self):
         """ 확률 1개, 2개 번호 중 상위 6개 숫자가 당첨번호에 포함 되는지 확인 """
         # 진행할 회차 선정 (완료된 파일 확인해서 새로운 회차만 진행)
@@ -218,6 +221,9 @@ class Verifier:
         s_파일명 = '확률번호포함확인_summary.csv'
         df_summary.to_csv(os.path.join(s_폴더명, s_파일명), index=False, encoding='cp949')
 
+        # 로그 기록
+        self.make_log(f'# 확률번호 포함확인 생성 완료 #')
+
     def 포함확인_당첨번호위치(self):
         """ 6개확률 순서 중 당첨번호 위치 확인 """
         # 진행할 회차 선정 (완료된 파일 확인해서 새로운 회차만 진행)
@@ -299,6 +305,9 @@ class Verifier:
             # csv 저장
             df_당첨위치.to_csv(os.path.join(s_폴더명, s_파일명), index=False, encoding='cp949')
 
+            # 로그 기록
+            self.make_log(f'# 당첨번호 위치 생성 완료 #')
+
     def 결과확인(self):
         """ m30에서 선정한 번호를 가져와서 결과 확인 """
         # 선정 로직별 폴더 확인
@@ -330,6 +339,9 @@ class Verifier:
                     continue
                 s_추첨일 = df_이력_회차['추첨일'].values[0].replace('.', '')
                 ary_당첨_n = df_이력_회차.loc[:, 'win_1': 'win_6'].values[0]
+
+                # 로그 기록
+                self.make_log(f'# {s_선정로직} 결과확인 - {n_회차}차_{s_추첨일}추첨 #')
 
                 # 선정된 번호 불러오기
                 df_선정번호 = pd.read_csv(os.path.join(s_폴더_확인대상, f'확률예측_번호선정_{n_회차}차_{s_추첨일}추첨.csv'))
@@ -436,6 +448,9 @@ class Verifier:
 
         # 파일 저장
         df_통합.to_csv(os.path.join(self.folder_결과확인, '번호선정_summary.csv'), index=False, encoding='cp949')
+
+        # 로그 기록
+        self.make_log(f'# 결과 정리 완료 #')
 
     ###################################################################################################################
 
