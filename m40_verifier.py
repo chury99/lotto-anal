@@ -437,7 +437,7 @@ class Verifier:
             #     li_df.append(df_개별.loc[:, 'seq': 'date'])
 
             # 데이터 집어넣기
-            s_로직 = s_폴더[5:]
+            s_로직 = s_폴더[7:]
             df_개별 = df_개별.sort_values('회차', ascending=True)
             df_개별[s_로직] = df_개별['award'].cumsum()
             df_개별 = df_개별.sort_values('회차', ascending=False)
