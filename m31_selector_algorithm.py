@@ -4,16 +4,16 @@ import pandas as pd
 
 
 # noinspection PyUnresolvedReferences,PyProtectedMember,PyPep8Naming
-def 번호선정로직_2개번호_최빈수(dic_확률):
+def 번호선정로직_2개번호_최빈수(dic_정보):
     """ 계산된 확률값을 바탕으로 6개 번호 5 세트 선택 - 2개 번호 상위 30개 중 최빈수 선택 """
     # function 이름 찾기
     func_name = sys._getframe(0).f_code.co_name
     s_전략명 = func_name
 
     # 확률값 가져오기
-    df_확률_1개 = dic_확률['df_확률_1개']
-    df_확률_2개 = dic_확률['df_확률_2개']
-    df_확률_6개 = dic_확률['df_확률_6개']
+    df_확률_1개 = dic_정보['df_확률_1개']
+    df_확률_2개 = dic_정보['df_확률_2개']
+    df_확률_6개 = dic_정보['df_확률_6개']
 
     # 2개 확률 중 상위 30개 번호 최빈수 찾기
     df_30개 = df_확률_2개[:30].copy()
@@ -55,16 +55,16 @@ def 번호선정로직_2개번호_최빈수(dic_확률):
 
 
 # noinspection PyUnresolvedReferences,PyProtectedMember,PyPep8Naming
-def 번호선정로직_2개번호_최빈수_중복제외(dic_확률):
+def 번호선정로직_2개번호_최빈수_중복제외(dic_정보):
     """ 계산된 확률값을 바탕으로 6개 번호 5 세트 선택 - 2개 번호 상위 30개 중 최빈수 선택 """
     # function 이름 찾기
     func_name = sys._getframe(0).f_code.co_name
     s_전략명 = func_name
 
     # 확률값 가져오기
-    df_확률_1개 = dic_확률['df_확률_1개']
-    df_확률_2개 = dic_확률['df_확률_2개']
-    df_확률_6개 = dic_확률['df_확률_6개']
+    df_확률_1개 = dic_정보['df_확률_1개']
+    df_확률_2개 = dic_정보['df_확률_2개']
+    df_확률_6개 = dic_정보['df_확률_6개']
 
     # 2개 확률 중 상위 30개 번호 최빈수 찾기
     df_30개 = df_확률_2개[:30].copy()
@@ -118,16 +118,15 @@ def 번호선정로직_2개번호_최빈수_중복제외(dic_확률):
 
 
 # noinspection PyUnresolvedReferences,PyProtectedMember,PyPep8Naming
-def 번호선정로직_2개번호_따라가기(dic_확률):
+def 번호선정로직_2개번호_따라가기(dic_정보):
     """ 1개 번호 선정 후 2개 번호 중 확률 높은 거 기준으로 따라가기 """
     # function 이름 찾기
     func_name = sys._getframe(0).f_code.co_name
     s_전략명 = func_name
 
     # 확률값 가져오기
-    df_확률_1개 = dic_확률['df_확률_1개']
-    df_확률_2개 = dic_확률['df_확률_2개']
-    # df_확률_6개 = dic_확률['df_확률_6개']
+    df_확률_1개 = dic_정보['df_확률_1개']
+    df_확률_2개 = dic_정보['df_확률_2개']
 
     # 예측번호 1개 확인
     ary_예측번호_1개_s = df_확률_1개[:5]['no'].values
@@ -170,16 +169,15 @@ def 번호선정로직_2개번호_따라가기(dic_확률):
 
 
 # noinspection PyUnresolvedReferences,PyProtectedMember,PyPep8Naming
-def 번호선정로직_2개번호_따라가기_확률반영(dic_확률):
+def 번호선정로직_2개번호_따라가기_확률반영(dic_정보):
     """ 1개 번호 선정 후 2개 번호 중 확률 높은 거 기준으로 따라가기 """
     # function 이름 찾기
     func_name = sys._getframe(0).f_code.co_name
     s_전략명 = func_name
 
     # 확률값 가져오기
-    df_확률_1개 = dic_확률['df_확률_1개']
-    df_확률_2개 = dic_확률['df_확률_2개']
-    # df_확률_6개 = dic_확률['df_확률_6개']
+    df_확률_1개 = dic_정보['df_확률_1개']
+    df_확률_2개 = dic_정보['df_확률_2개']
 
     # 예측번호 1개 확인
     ary_예측번호_1개_s = df_확률_1개[:20]['no'].values
@@ -340,16 +338,16 @@ def 번호선정로직_2개번호_따라가기_확률반영(dic_확률):
 
 
 # noinspection PyUnresolvedReferences,PyProtectedMember,PyPep8Naming
-def 번호선정로직_복합로직_최빈수_따라가기(dic_확률):
+def 번호선정로직_복합로직_최빈수_따라가기(dic_정보):
     """ 최빈수 로직 + 따라가기 로직 합해서 번호 선정 """
     # function 이름 찾기
     func_name = sys._getframe(0).f_code.co_name
     s_전략명 = func_name
 
     # 확률값 가져오기
-    df_확률_1개 = dic_확률['df_확률_1개']
-    df_확률_2개 = dic_확률['df_확률_2개']
-    df_확률_6개 = dic_확률['df_확률_6개']
+    df_확률_1개 = dic_정보['df_확률_1개']
+    df_확률_2개 = dic_정보['df_확률_2개']
+    df_확률_6개 = dic_정보['df_확률_6개']
 
     # 최빈수 로직으로 2개 번호 찾기
     # 2개 확률 중 상위 30개 번호 최빈수 찾기
@@ -457,16 +455,16 @@ def 번호선정로직_복합로직_최빈수_따라가기(dic_확률):
 
 
 # noinspection PyUnresolvedReferences,PyProtectedMember,PyPep8Naming
-def 번호선정로직_1개2개연계_최빈수연계(dic_확률):
+def 번호선정로직_1개2개연계_최빈수연계(dic_정보):
     """ 1개확률 + 2개확률 번호 연계하여 최빈수 로직 적용하여 번호 선정 (6개확률 사용) """
     # function 이름 찾기
     func_name = sys._getframe(0).f_code.co_name
     s_전략명 = func_name
 
     # 확률값 가져오기
-    df_확률_1개 = dic_확률['df_확률_1개']
-    df_확률_2개 = dic_확률['df_확률_2개']
-    df_확률_6개 = dic_확률['df_확률_6개']
+    df_확률_1개 = dic_정보['df_확률_1개']
+    df_확률_2개 = dic_정보['df_확률_2개']
+    df_확률_6개 = dic_정보['df_확률_6개']
 
     # no1 찾기 (1개 확률 top1)
     li_no = [int(s_no.replace('no', '')) for s_no in df_확률_1개['no'].values]
@@ -549,5 +547,89 @@ def 번호선정로직_1개2개연계_최빈수연계(dic_확률):
     df_번호조합_정렬 = pd.DataFrame(li_번호조합_정렬, columns=li_cols)
 
     df_6개번호_5개세트 = df_번호조합
+
+    return s_전략명, df_6개번호_5개세트
+
+
+# noinspection PyUnresolvedReferences,PyProtectedMember,PyPep8Naming
+def 번호선정로직_앙상블_결과종합(dic_정보):
+    """ 1개확률 + 2개확률 번호 연계하여 최빈수 로직 적용하여 번호 선정 (6개확률 사용) """
+    # function 이름 찾기
+    func_name = sys._getframe(0).f_code.co_name
+    s_전략명 = func_name
+
+    # 기준정보 가져오기
+    folder_번호선정 = dic_정보['folder_번호선정']
+    n_회차 = dic_정보['n_회차']
+    s_추첨일 = dic_정보['s_추첨일']
+
+    # 확률값 가져오기
+    df_확률_1개 = dic_정보['df_확률_1개']
+    df_확률_2개 = dic_정보['df_확률_2개']
+    df_확률_6개 = dic_정보['df_확률_6개']
+
+    # 선정 번호들 가져오기
+    li_로직 = [폴더 for 폴더 in os.listdir(folder_번호선정) if '.csv' not in 폴더]
+    li_로직 = [폴더 for 폴더 in li_로직 if s_전략명 not in 폴더]
+
+    li_df_번호 = []
+    for s_로직 in li_로직:
+        s_폴더명 = os.path.join(folder_번호선정, s_로직)
+        df_번호 = pd.read_csv(os.path.join(s_폴더명, f'확률예측_번호선정_{n_회차}차_{s_추첨일}추첨.csv'), encoding='cp949')
+        li_df_번호.append(df_번호)
+
+    df_번호 = pd.concat(li_df_번호, axis=0)
+
+    # 중복 등장 찾기
+    sri_카운트_6개 = df_번호.value_counts(ascending=False)
+    sri_중복등장 = sri_카운트_6개[sri_카운트_6개 > 1].index
+    li_중복등장 = [list(tup) for tup in sri_중복등장]
+
+    # 최빈수 구하기
+    sri_선정번호 = pd.Series(df_번호.values.reshape(1, -1)[0])
+    sri_카운트_1개 = sri_선정번호.value_counts(ascending=False)
+    li_상위4개 = list(sri_카운트_1개.index[:4])
+    li_나머지 = list(sri_카운트_1개.index[4:])
+    li_나머지 = [n for n in li_나머지 if n > 0]
+
+    # 나머지 숫자로 2가지 조합하는 경우의 수 구하기
+    li_li_2개 = []
+    li_나머지_2번째 = [n for n in li_나머지]
+    for n_번호1 in li_나머지:
+        li_나머지_2번째.remove(n_번호1)
+        dummy = [li_li_2개.append([n_번호1, n_번호2]) for n_번호2 in li_나머지_2번째]
+
+    # 확률 확인할 숫자 조합 구하기
+    li_6개번호 = [sorted(li_상위4개 + li_2개조합) for li_2개조합 in li_li_2개]
+    df_6개번호 = pd.DataFrame(li_6개번호, columns=[f'no{n + 1}' for n in range(6)])
+
+    # 확률 확인
+    li_구분자 = ['|'] * len(df_확률_6개)
+    df_확률_6개['key'] = df_확률_6개['no1'].astype(str) + li_구분자 + df_확률_6개['no2'].astype(str) + li_구분자\
+                      + df_확률_6개['no3'].astype(str) + li_구분자 + df_확률_6개['no4'].astype(str) + li_구분자\
+                      + df_확률_6개['no5'].astype(str) + li_구분자 + df_확률_6개['no6'].astype(str)
+    dic_확률_6개 = df_확률_6개.set_index('key').to_dict()['prob_1']
+
+    li_구분자 = ['|'] * len(df_6개번호)
+    df_6개번호['key'] = df_6개번호['no1'].astype(str) + li_구분자 + df_6개번호['no2'].astype(str) + li_구분자\
+                     + df_6개번호['no3'].astype(str) + li_구분자 + df_6개번호['no4'].astype(str) + li_구분자\
+                     + df_6개번호['no5'].astype(str) + li_구분자 + df_6개번호['no6'].astype(str)
+    df_6개번호['확률'] = df_6개번호['key'].apply(lambda x: dic_확률_6개[x] if x in dic_확률_6개.keys() else 0)
+    df_6개번호 = df_6개번호.sort_values('확률', ascending=False)
+
+    # 번호 선택 (중복 2개, 확률 하위 1개, 확률 상위 n개)
+    ary_6개번호 = df_6개번호.loc[:, 'no1': 'no6'].values
+
+    li_선정_중복 = li_중복등장[:2]
+    li_선정_하위 = [list(ary_6개번호[-1])]
+
+    n_상위갯수 = 5 - len(li_선정_중복 + li_선정_하위)
+    li_선정_중복하위 = li_선정_중복 + li_선정_하위
+    li_선정_상위 = [list(ary) for ary in ary_6개번호[: n_상위갯수]]
+    li_선정번호 = li_선정_중복 + li_선정_상위 + li_선정_하위
+
+    # df 정리
+    li_cols = ['no1', 'no2', 'no3', 'no4', 'no5', 'no6']
+    df_6개번호_5개세트 = pd.DataFrame(li_선정번호, columns=li_cols)
 
     return s_전략명, df_6개번호_5개세트
