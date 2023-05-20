@@ -307,7 +307,8 @@ class Verifier:
     def 결과확인(self):
         """ m30에서 선정한 번호를 가져와서 결과 확인 """
         # 선정 로직별 폴더 확인
-        li_선정로직 = os.listdir(self.folder_번호선정)
+        li_선정로직 = [s_폴더 for s_폴더 in os.listdir(self.folder_번호선정)
+                   if '번호선정로직_' in s_폴더 and '.csv' not in s_폴더]
 
         for s_선정로직 in li_선정로직:
             # 대상 회차 선정 (번호선정 완료된 회차 찾기)
@@ -429,10 +430,6 @@ class Verifier:
             s_파일명 = [s_파일명 for s_파일명 in os.listdir(s_폴더명) if '_summary_' in s_파일명 and '.csv' in s_파일명][0]
             df_개별 = pd.read_csv(os.path.join(s_폴더명, s_파일명), encoding='cp949')
 
-            # # 구분자 집어넣기
-            # if len(li_df) == 0:
-            #     li_df.append(df_개별.loc[:, 'seq': 'date'])
-
             # 데이터 집어넣기
             s_로직 = s_폴더[7:]
             df_개별 = df_개별.sort_values('회차', ascending=True)
@@ -448,6 +445,151 @@ class Verifier:
 
         # 로그 기록
         self.make_log(f'# 결과 정리 완료 #')
+
+    def 추가확인(self):
+        """ 추가 확인 항목에 대한 결과 확인 """
+        # 확인 항목 정의
+        li_확인항목 = [s_폴더 for s_폴더 in os.listdir(self.folder_번호선정)
+                   if '추가확인_' in s_폴더 and '.csv' not in s_폴더]
+
+        for s_확인항목 in li_확인항목:
+            # 대상 회차 선정 (번호선정 완료된 회차 찾기)
+            s_폴더_데이터 = os.path.join(self.folder_번호선정, s_확인항목)
+            li_파일명 = [s_파일명 for s_파일명 in os.listdir(s_폴더_데이터)
+                      if '추가확인_' in s_파일명 and '.csv' in s_파일명 and 'summary_' not in s_파일명]
+            li_정보 = [s_파일명.split(sep='_') for s_파일명 in li_파일명]
+            li_회차_대상 = [int(s_정보[1].replace('차', '')) for s_정보 in li_정보]
+
+            # 진행할 회차 선정 (완료된 파일 확인해서 새로운 회차만 진행)
+            s_폴더_결과 = os.path.join(self.folder_결과확인, s_확인항목)
+            os.makedirs(s_폴더_결과, exist_ok=True)
+            li_파일명 = [s_파일명 for s_파일명 in os.listdir(s_폴더_결과)
+                      if '추가확인_' in s_파일명 and '.csv' in s_파일명 and 'summary_' not in s_파일명]
+            li_정보 = [s_파일명.split(sep='_') for s_파일명 in li_파일명]
+            li_회차_완료 = [int(s_정보[1].replace('차', '')) for s_정보 in li_정보]
+
+            li_회차_할거 = [n_회차 for n_회차 in li_회차_대상 if n_회차 not in li_회차_완료]
+
+            # 회차별 결과 확인
+            for n_회차 in tqdm(li_회차_할거, desc=f'추가확인|{s_확인항목[5:]}'):
+                # 해당 회차 정보 불러오기
+                df_이력_회차 = self.df_이력[self.df_이력['회차'] == n_회차]
+                if len(df_이력_회차) == 0:
+                    continue
+                s_추첨일 = df_이력_회차['추첨일'].values[0].replace('.', '')
+                ary_당첨_n = df_이력_회차.loc[:, 'win_1': 'win_6'].values[0]
+
+                # 로그 기록
+                self.make_log(f'# {s_확인항목} - {n_회차}차_{s_추첨일}추첨 #')
+
+                # 선정된 번호 불러오기
+                s_파일명 = f'추가확인_{n_회차}차_{s_추첨일}추첨.csv'
+                df_선정번호 = pd.read_csv(os.path.join(s_폴더_데이터, s_파일명), encoding='cp949')
+
+                # 결과 확인
+                li_li_번호조합 = [list(ary) for ary in df_선정번호.loc[:, 'no1': 'no6'].values]
+                li_당첨번호 = list(ary_당첨_n)
+                li_결과_전체 = []
+                for li_번호조합 in li_li_번호조합:
+                    li_당첨확인 = [1 if int(n_번호) in li_당첨번호 else 0 for n_번호 in li_번호조합]
+                    li_결과 = li_당첨확인 + [sum(li_당첨확인)] + list(li_번호조합) + list(li_당첨번호)
+                    li_결과_전체.append(li_결과)
+
+                # 결과 df 생성
+                li_컬럼명 = [f'win{n + 1}' for n in range(6)] + ['cnt_win'] \
+                         + [f'no{n + 1}' for n in range(6)] + [f'win_{n + 1}' for n in range(6)]
+                df_결과 = pd.DataFrame(li_결과_전체, columns=li_컬럼명)
+                df_결과['회차'] = n_회차
+                df_결과['추첨일'] = s_추첨일
+
+                # 상금 입력
+                df_결과['award'] = df_결과['cnt_win'].apply(lambda x: 0 if x <= 2 else
+                                                                  5000 if x == 3 else
+                                                                 50000 if x == 4 else
+                                                               1000000 if x == 5 else
+                                                            1000000000)
+
+                # 컬럼 순서 정리
+                li_컬럼명 = ['회차', '추첨일'] + [f'win{n + 1}' for n in range(6)] \
+                         + ['cnt_win', 'award'] + [f'no{n + 1}' for n in range(6)] + [f'win_{n + 1}' for n in
+                                                                                      range(6)]
+                df_결과 = df_결과.loc[:, li_컬럼명]
+
+                # csv 저장
+                n_최대매칭 = df_결과['cnt_win'].max()
+                n_상금 = df_결과['award'].sum()
+                n_세트 = len(df_결과)
+                s_파일명 = f'확률예측_추첨결과_{n_회차}차_{s_추첨일}추첨_{n_최대매칭}개_{n_상금}원_{n_세트}세트.csv'
+                df_결과.to_csv(os.path.join(s_폴더_결과, s_파일명), index=False, encoding='cp949')
+
+            # 당첨번호 포함 확인 csv 파일 읽어오기
+            li_파일명 = [s_파일명 for s_파일명 in os.listdir(s_폴더_결과)
+                      if '확률예측_추첨결과_' in s_파일명 and '.csv' in s_파일명 and '_summary' not in s_파일명]
+
+            # 정보 정리
+            li_정보 = [s_파일명.split(sep='_') for s_파일명 in li_파일명]
+            li_정보 = [[int(s_정보[2].replace('차', '')),
+                      s_정보[3].replace('추첨', ''),
+                      int(s_정보[4].replace('개', '')),
+                      int(s_정보[5].replace('원', '')),
+                      int(s_정보[6].replace('세트.csv', ''))]
+                     for s_정보 in li_정보]
+
+            # df 생성
+            li_컬럼명 = ['회차', '추첨일', 'win_cnt', 'award', '세트']
+            df_정리 = pd.DataFrame(li_정보, columns=li_컬럼명)
+            df_정리 = df_정리.sort_values('회차', ascending=False).reset_index(drop=True)
+
+            # 기존 summary 파일 삭제
+            li_파일명 = [s_파일명 for s_파일명 in os.listdir(s_폴더_결과) if '_summary_' in s_파일명 and '.csv' in s_파일명]
+            for s_파일명 in li_파일명:
+                os.remove(os.path.join(s_폴더_결과, s_파일명))
+
+            # csv 저장
+            n_상금 = df_정리['award'].sum()
+            n_세트 = df_정리['세트'].sum()
+            s_파일명 = f'확률예측_추첨결과_summary_{n_상금:,}원_{n_세트:,}세트.csv'
+            df_정리.to_csv(os.path.join(s_폴더_결과, s_파일명), index=False, encoding='cp949')
+
+    def 추가확인_한번에정리(self):
+        """ 추가확인 폴더에 있는 있는 summary 파일 읽어와서 하나의 파일로 정리 후 csv 저장 """
+        # summary 데이터 담을 list 생성
+        li_df = []
+
+        # 당첨번호 포함갯수 추가
+        s_폴더명 = os.path.join(self.folder_결과확인, '포함확인_당첨번호')
+        s_파일명 = '당첨번호포함여부_summary.csv'
+        df_포함 = pd.read_csv(os.path.join(s_폴더명, s_파일명), encoding='cp949')
+        df_포함['번호포함갯수'] = df_포함['포함갯수']
+
+        li_df.append(df_포함.loc[:, ['회차', '추첨일', '번호포함갯수']])
+
+        # 번호선정 로직별 결과 추가
+        li_폴더 = [s_폴더 for s_폴더 in os.listdir(self.folder_결과확인)
+                 if '추가확인_' in s_폴더 and '.csv' not in s_폴더]
+
+        # summary 파일 하나로 통합
+        for s_폴더 in li_폴더:
+            # summary 파일 읽어오기
+            s_폴더명 = os.path.join(self.folder_결과확인, s_폴더)
+            s_파일명 = [s_파일명 for s_파일명 in os.listdir(s_폴더명) if '_summary_' in s_파일명 and '.csv' in s_파일명][0]
+            df_개별 = pd.read_csv(os.path.join(s_폴더명, s_파일명), encoding='cp949')
+
+            # 데이터 집어넣기
+            s_로직 = s_폴더[5:]
+            df_개별 = df_개별.sort_values('회차', ascending=True)
+            df_개별[s_로직] = df_개별['award'].cumsum()
+            df_개별 = df_개별.sort_values('회차', ascending=False)
+            df_데이터 = df_개별.loc[:, ['win_cnt', 'award', '세트', s_로직]]
+            df_데이터[s_로직] = df_데이터[s_로직].apply(lambda x: f'{x:,}')
+            li_df.append(df_데이터)
+        df_통합 = pd.concat(li_df, axis=1)
+
+        # 파일 저장
+        df_통합.to_csv(os.path.join(self.folder_결과확인, '추가확인_summary.csv'), index=False, encoding='cp949')
+
+        # 로그 기록
+        self.make_log(f'# 추가확인 항목 정리 완료 #')
 
     ###################################################################################################################
 
@@ -482,3 +624,7 @@ if __name__ == '__main__':
     # 결과 확인 데이터 생성
     v.결과확인()
     v.결과확인_한번에정리()
+
+    # 추가 확인 데이터 생성
+    v.추가확인()
+    v.추가확인_한번에정리()
