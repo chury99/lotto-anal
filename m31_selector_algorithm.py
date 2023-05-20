@@ -475,7 +475,7 @@ def 번호선정로직_1개2개연계_최빈수연계(dic_정보):
     df_1000개['포함_동시'] = df_1000개['포함_no1'] + df_1000개['포함_no2']
     df_동시포함 = df_1000개[df_1000개['포함_동시'] == 2].copy()
 
-    li_동시포함 = list(df_동시포함['no1'].values) + list(df_동시포함['no2'].values) + list(df_동시포함['no3'].values)\
+    li_동시포함 = list(df_동시포함['no1'].values) + list(df_동시포함['no2'].values) + list(df_동시포함['no3'].values) \
               + list(df_동시포함['no4'].values) + list(df_동시포함['no5'].values) + list(df_동시포함['no6'].values)
     sri_카운트_6개확률 = pd.Series(li_동시포함).value_counts()
     li_연계포함 = [no for no in sri_카운트_6개확률.index if (no in li_no_연계) and (no not in [n_no1, n_no2])]
@@ -549,7 +549,7 @@ def 번호선정로직_앙상블_결과종합(dic_정보):
     df_확률_6개 = dic_정보['df_확률_6개']
 
     # 선정 번호들 가져오기
-    li_로직 = [폴더 for 폴더 in os.listdir(folder_번호선정) if '.csv' not in 폴더]
+    li_로직 = [폴더 for 폴더 in os.listdir(folder_번호선정) if '번호선정로직_' in 폴더 and '.csv' not in 폴더]
     li_로직 = [폴더 for 폴더 in li_로직 if s_전략명 not in 폴더]
 
     li_df_번호 = []
@@ -585,14 +585,14 @@ def 번호선정로직_앙상블_결과종합(dic_정보):
 
     # 확률 확인
     li_구분자 = ['|'] * len(df_확률_6개)
-    df_확률_6개['key'] = df_확률_6개['no1'].astype(str) + li_구분자 + df_확률_6개['no2'].astype(str) + li_구분자\
-                      + df_확률_6개['no3'].astype(str) + li_구분자 + df_확률_6개['no4'].astype(str) + li_구분자\
+    df_확률_6개['key'] = df_확률_6개['no1'].astype(str) + li_구분자 + df_확률_6개['no2'].astype(str) + li_구분자 \
+                      + df_확률_6개['no3'].astype(str) + li_구분자 + df_확률_6개['no4'].astype(str) + li_구분자 \
                       + df_확률_6개['no5'].astype(str) + li_구분자 + df_확률_6개['no6'].astype(str)
     dic_확률_6개 = df_확률_6개.set_index('key').to_dict()['prob_1']
 
     li_구분자 = ['|'] * len(df_6개번호)
-    df_6개번호['key'] = df_6개번호['no1'].astype(str) + li_구분자 + df_6개번호['no2'].astype(str) + li_구분자\
-                     + df_6개번호['no3'].astype(str) + li_구분자 + df_6개번호['no4'].astype(str) + li_구분자\
+    df_6개번호['key'] = df_6개번호['no1'].astype(str) + li_구분자 + df_6개번호['no2'].astype(str) + li_구분자 \
+                     + df_6개번호['no3'].astype(str) + li_구분자 + df_6개번호['no4'].astype(str) + li_구분자 \
                      + df_6개번호['no5'].astype(str) + li_구분자 + df_6개번호['no6'].astype(str)
     df_6개번호['확률'] = df_6개번호['key'].apply(lambda x: dic_확률_6개[x] if x in dic_확률_6개.keys() else 0)
     df_6개번호 = df_6개번호.sort_values('확률', ascending=False)
@@ -610,5 +610,15 @@ def 번호선정로직_앙상블_결과종합(dic_정보):
     # df 정리
     li_cols = ['no1', 'no2', 'no3', 'no4', 'no5', 'no6', 'remark']
     df_6개번호_5개세트 = pd.DataFrame(li_선정번호, columns=li_cols)
+
+    # 전체 확인용 데이터 저장
+    s_폴더명 = os.path.join(folder_번호선정, '추가확인_중복카운트6개')
+    os.makedirs(s_폴더명, exist_ok=True)
+    sri_중복카운트_6개 = sri_카운트_6개[sri_카운트_6개 > 1]
+    sri_중복카운트_6개.to_csv(os.path.join(s_폴더명, f'추가확인_{n_회차}차_{s_추첨일}추첨.csv'), encoding='cp949')
+
+    s_폴더명 = os.path.join(folder_번호선정, '추가확인_최빈수4개확률')
+    os.makedirs(s_폴더명, exist_ok=True)
+    df_6개번호.to_csv(os.path.join(s_폴더명, f'추가확인_{n_회차}차_{s_추첨일}추첨.csv'), index=False, encoding='cp949')
 
     return s_전략명, df_6개번호_5개세트
