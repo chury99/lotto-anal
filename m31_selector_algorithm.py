@@ -620,16 +620,15 @@ def 번호선정로직_앙상블_결과종합(dic_정보):
     # 번호 선택 (중복 2개, 확률 하위 1개, 확률 상위 n개)
     ary_6개번호 = df_6개번호.loc[:, 'no1': 'no6'].values
 
-    li_선정_중복 = li_중복등장[:2]
-    li_선정_하위 = [list(ary_6개번호[-1])]
+    li_선정_중복 = [li_중복 + ['중복등장'] for li_중복 in li_중복등장[:2]]
+    li_선정_하위 = [list(ary_6개번호[-1]) + ['확률하위']]
 
     n_상위갯수 = 5 - len(li_선정_중복 + li_선정_하위)
-    li_선정_중복하위 = li_선정_중복 + li_선정_하위
-    li_선정_상위 = [list(ary) for ary in ary_6개번호[: n_상위갯수]]
+    li_선정_상위 = [list(ary) + ['확률상위'] for ary in ary_6개번호[: n_상위갯수]]
     li_선정번호 = li_선정_중복 + li_선정_상위 + li_선정_하위
 
     # df 정리
-    li_cols = ['no1', 'no2', 'no3', 'no4', 'no5', 'no6']
+    li_cols = ['no1', 'no2', 'no3', 'no4', 'no5', 'no6', 'remark']
     df_6개번호_5개세트 = pd.DataFrame(li_선정번호, columns=li_cols)
 
     return s_전략명, df_6개번호_5개세트
