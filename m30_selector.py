@@ -97,7 +97,7 @@ class Selector:
 
             # csv 저장
             s_파일명 = f'확률예측_번호선정_{n_회차}차_{s_추첨일}추첨.csv'
-            df_6개번호_5개세트.to_csv(os.path.join(folder_전략명, s_파일명), index=False)
+            df_6개번호_5개세트.to_csv(os.path.join(folder_전략명, s_파일명), index=False, encoding='cp949')
 
     ###################################################################################################################
 
