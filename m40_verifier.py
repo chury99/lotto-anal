@@ -38,10 +38,6 @@ class Verifier:
         else:
             self.dic_args = dict()
 
-        # 카카오 API 연결
-        # sys.path.extend(dic_config['folder_kakao'])
-        # import API_kakao
-
         # log 기록
         self.make_log(f'### 결과 확인 시작 ###')
 
