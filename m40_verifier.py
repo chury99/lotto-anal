@@ -344,10 +344,11 @@ class Verifier:
                 self.make_log(f'# {s_선정로직} 결과확인 - {n_회차}차_{s_추첨일}추첨 #')
 
                 # 선정된 번호 불러오기
-                df_선정번호 = pd.read_csv(os.path.join(s_폴더_확인대상, f'확률예측_번호선정_{n_회차}차_{s_추첨일}추첨.csv'))
+                s_파일명 = f'확률예측_번호선정_{n_회차}차_{s_추첨일}추첨.csv'
+                df_선정번호 = pd.read_csv(os.path.join(s_폴더_확인대상, s_파일명), encoding='cp949')
 
                 # 결과 확인
-                li_li_번호조합 = [list(ary) for ary in df_선정번호.values]
+                li_li_번호조합 = [list(ary) for ary in df_선정번호.loc[:, 'no1': 'no6'].values]
                 li_당첨번호 = list(ary_당첨_n)
                 li_결과_전체 = []
                 for li_번호조합 in li_li_번호조합:
