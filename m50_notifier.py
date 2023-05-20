@@ -60,7 +60,7 @@ class Notifier:
 
         # 카톡 보내기
         import API_kakao
-        k = API_kakao.kakaoAPIcontrol()
+        k = API_kakao.KakaoAPI()
         result = k.send_message(s_user='알림봇', s_friend='여봉이', s_text=s_메세지)
 
         # log 기록
