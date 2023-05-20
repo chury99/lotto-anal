@@ -46,11 +46,6 @@ def 번호선정로직_2개번호_최빈수(dic_정보):
     li_컬럼명 = [f'no{n + 1}' for n in range(6)]
     df_6개번호_5개세트 = pd.DataFrame(li_6개번호_5개세트, columns=li_컬럼명)
 
-    # 확률값 추가
-    # df_확률_6개['no_all'] = ['_'.join(s_번호 for s_번호 in ary_6개번호) for ary_6개번호 in ary_6개번호_전체]
-    # dic_확률_6개 = df_확률_6개.set_index('no_all').to_dict()['prob_1']
-    # df_6개번호_5개세트['prob_1'] = [dic_확률_6개['_'.join(s_번호 for s_번호 in li_6개번호)] for li_6개번호 in li_6개번호_5개세트]
-
     return s_전략명, df_6개번호_5개세트
 
 
@@ -109,11 +104,6 @@ def 번호선정로직_2개번호_최빈수_중복제외(dic_정보):
     li_컬럼명 = [f'no{n + 1}' for n in range(6)]
     df_6개번호_5개세트 = pd.DataFrame(li_6개번호_5개세트, columns=li_컬럼명)
 
-    # 확률값 추가
-    # df_확률_6개['no_all'] = ['_'.join(s_번호 for s_번호 in ary_6개번호) for ary_6개번호 in ary_6개번호_전체]
-    # dic_확률_6개 = df_확률_6개.set_index('no_all').to_dict()['prob_1']
-    # df_6개번호_5개세트['prob_1'] = [dic_확률_6개['_'.join(s_번호 for s_번호 in li_6개번호)] for li_6개번호 in li_6개번호_5개세트]
-
     return s_전략명, df_6개번호_5개세트
 
 
@@ -159,11 +149,6 @@ def 번호선정로직_2개번호_따라가기(dic_정보):
     # df 변환
     li_컬럼명 = [f'no{n + 1}' for n in range(6)]
     df_6개번호_5개세트 = pd.DataFrame(li_li_번호조합, columns=li_컬럼명)
-
-    # # 확률값 추가
-    # df_확률_6개['no_all'] = ['_'.join(s_번호 for s_번호 in ary_6개번호) for ary_6개번호 in ary_6개번호_전체]
-    # dic_확률_6개 = df_확률_6개.set_index('no_all').to_dict()['prob_1']
-    # df_6개번호_5개세트['prob_1'] = [dic_확률_6개['_'.join(s_번호 for s_번호 in li_6개번호)] for li_6개번호 in li_6개번호_5개세트]
 
     return s_전략명, df_6개번호_5개세트
 
@@ -328,11 +313,6 @@ def 번호선정로직_2개번호_따라가기_확률반영(dic_정보):
     # df 변환
     li_컬럼명 = [f'no{n + 1}' for n in range(6)]
     df_6개번호_5개세트 = pd.DataFrame(li_li_번호조합, columns=li_컬럼명)
-
-    # # 확률값 추가
-    # df_확률_6개['no_all'] = ['_'.join(s_번호 for s_번호 in ary_6개번호) for ary_6개번호 in ary_6개번호_전체]
-    # dic_확률_6개 = df_확률_6개.set_index('no_all').to_dict()['prob_1']
-    # df_6개번호_5개세트['prob_1'] = [dic_확률_6개['_'.join(s_번호 for s_번호 in li_6개번호)] for li_6개번호 in li_6개번호_5개세트]
 
     return s_전략명, df_6개번호_5개세트
 
