@@ -519,20 +519,20 @@ class Verifier:
                 n_최대매칭 = df_결과['cnt_win'].max()
                 n_상금 = df_결과['award'].sum()
                 n_세트 = len(df_결과)
-                s_파일명 = f'확률예측_추첨결과_{n_회차}차_{s_추첨일}추첨_{n_최대매칭}개_{n_상금}원_{n_세트}세트.csv'
+                s_파일명 = f'추가확인_{n_회차}차_{s_추첨일}추첨_{n_최대매칭}개_{n_상금}원_{n_세트}세트.csv'
                 df_결과.to_csv(os.path.join(s_폴더_결과, s_파일명), index=False, encoding='cp949')
 
             # 당첨번호 포함 확인 csv 파일 읽어오기
             li_파일명 = [s_파일명 for s_파일명 in os.listdir(s_폴더_결과)
-                      if '확률예측_추첨결과_' in s_파일명 and '.csv' in s_파일명 and '_summary' not in s_파일명]
+                      if '추가확인_' in s_파일명 and '.csv' in s_파일명 and '_summary' not in s_파일명]
 
             # 정보 정리
             li_정보 = [s_파일명.split(sep='_') for s_파일명 in li_파일명]
-            li_정보 = [[int(s_정보[2].replace('차', '')),
-                      s_정보[3].replace('추첨', ''),
-                      int(s_정보[4].replace('개', '')),
-                      int(s_정보[5].replace('원', '')),
-                      int(s_정보[6].replace('세트.csv', ''))]
+            li_정보 = [[int(s_정보[1].replace('차', '')),
+                      s_정보[2].replace('추첨', ''),
+                      int(s_정보[3].replace('개', '')),
+                      int(s_정보[4].replace('원', '')),
+                      int(s_정보[5].replace('세트.csv', ''))]
                      for s_정보 in li_정보]
 
             # df 생성
@@ -548,7 +548,7 @@ class Verifier:
             # csv 저장
             n_상금 = df_정리['award'].sum()
             n_세트 = df_정리['세트'].sum()
-            s_파일명 = f'확률예측_추첨결과_summary_{n_상금:,}원_{n_세트:,}세트.csv'
+            s_파일명 = f'추가확인_summary_{n_상금:,}원_{n_세트:,}세트.csv'
             df_정리.to_csv(os.path.join(s_폴더_결과, s_파일명), index=False, encoding='cp949')
 
     def 추가확인_한번에정리(self):
@@ -581,6 +581,7 @@ class Verifier:
             df_개별[s_로직] = df_개별['award'].cumsum()
             df_개별 = df_개별.sort_values('회차', ascending=False)
             df_데이터 = df_개별.loc[:, ['win_cnt', 'award', '세트', s_로직]]
+            df_데이터['award'] = df_데이터['award'].apply(lambda x: f'{x:,}')
             df_데이터[s_로직] = df_데이터[s_로직].apply(lambda x: f'{x:,}')
             li_df.append(df_데이터)
         df_통합 = pd.concat(li_df, axis=1)
