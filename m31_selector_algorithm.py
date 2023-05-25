@@ -597,14 +597,35 @@ def 번호선정로직_앙상블_결과종합(dic_정보):
     df_6개번호['확률'] = df_6개번호['key'].apply(lambda x: dic_확률_6개[x] if x in dic_확률_6개.keys() else 0)
     df_6개번호 = df_6개번호.sort_values('확률', ascending=False)
 
-    # 번호 선택 (중복 2개, 확률 하위 1개, 확률 상위 n개)
+    # 확률 순서로 정렬된 번호 생성
     ary_6개번호 = df_6개번호.loc[:, 'no1': 'no6'].values
+    li_선정_번호만 = []
 
+    # 중복 번호 선정 (max 2개)
+    li_dummy = [li_선정_번호만.append(li_중복) for li_중복 in li_중복등장[:2]]
     li_선정_중복 = [li_중복 + ['중복등장'] for li_중복 in li_중복등장[:2]]
-    li_선정_하위 = [list(ary_6개번호[-1]) + ['확률하위']]
 
-    n_상위갯수 = 5 - len(li_선정_중복 + li_선정_하위)
-    li_선정_상위 = [list(ary) + ['확률상위'] for ary in ary_6개번호[: n_상위갯수]]
+    # 확률 하위 번호 선정 (1개)
+    li_선정_하위 = []
+    for n in range(10):
+        n_위치 = (n + 1) * -1
+        li_선정 = list(ary_6개번호[n_위치])
+        if li_선정 not in li_선정_번호만:
+            li_선정_번호만.append(li_선정)
+            li_선정_하위.append(li_선정 + ['확률하위'])
+            break
+
+    # 화률 상위 번호 선정 (나머지 모두)
+    n_상위갯수 = 5 - len(li_선정_번호만)
+    li_선정_상위 = []
+    for n in range(10):
+        li_선정 = list(ary_6개번호[n])
+        if li_선정 not in li_선정_번호만:
+            li_선정_번호만.append(li_선정)
+            li_선정_상위.append(li_선정 + ['확률상위'])
+        if len(li_선정_번호만) >= 5:
+            break
+
     li_선정번호 = li_선정_중복 + li_선정_상위 + li_선정_하위
 
     # df 정리
